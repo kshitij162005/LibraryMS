@@ -15,11 +15,14 @@ interface PendingReturn {
 }
 
 const Dashboard = () => {
+  console.log('Dashboard component loaded');
+  
   const [pendingReturns, setPendingReturns] = useState<PendingReturn[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPendingReturns = async () => {
+      console.log('Fetching pending returns...');
       try {
         const { data, error } = await supabase
           .from('issuances')
@@ -33,6 +36,7 @@ const Dashboard = () => {
           .order('due_date', { ascending: true });
 
         if (error) throw error;
+        console.log('Pending returns fetched successfully:', data);
         setPendingReturns(data || []);
       } catch (error) {
         console.error('Error fetching pending returns:', error);
@@ -73,7 +77,7 @@ const Dashboard = () => {
               </thead>
               <tbody>
                 {pendingReturns.map((item) => (
-                  <tr key={item.id} className="border-b hover:bg-muted/50">
+                  <tr key={item.id} className="border-b hover:bg-muted/50" onClick={() => console.log('Row clicked:', item)}>
                     <td className="py-3 px-4">
                       <div>
                         <div className="font-medium">{item.member.name}</div>
