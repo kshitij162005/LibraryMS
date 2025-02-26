@@ -21,6 +21,10 @@ interface BookFormData {
   quantity: number;
 }
 
+const logButtonClick = (buttonName: string) => {
+  console.log(`[${new Date().toISOString()}] Button Clicked: ${buttonName}`);
+};
+
 const Books = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
@@ -56,6 +60,7 @@ const Books = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    logButtonClick(editingBook ? 'Update Book' : 'Add Book')
     try {
       if (editingBook) {
         const newAvailableQuantity = formData.quantity - (editingBook.quantity - editingBook.available_quantity);
@@ -103,6 +108,7 @@ const Books = () => {
   
 
   const handleEdit = (book: Book) => {
+    logButtonClick('Edit Book');
     setEditingBook(book);
     setFormData({
       title: book.title,
@@ -125,7 +131,7 @@ const Books = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Books</h1>
-        <Button onClick={() => setDialogOpen(true)}>
+        <Button onClick={() => { logButtonClick('Add Book'); setDialogOpen(true); }}>
           <Plus className="h-4 w-4 mr-2" />
           Add Book
         </Button>
