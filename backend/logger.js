@@ -1,22 +1,33 @@
 const winston = require('winston');
 const path = require('path');
-require('dotenv').config(); // Load environment variables
+const fs = require('fs');
 
-// Get log file path from .env or use default
-const logFilePath = process.env.LOG_FILE_PATH || path.join(__dirname, 'logs', 'app.log');
+// Define log directory path
+const logDirectory = path.join(__dirname, '../logs');
 
+// Ensure logs directory exists
+try {
+    if (!fs.existsSync(logDirectory)) {
+        fs.mkdirSync(logDirectory, { recursive: true });
+    }
+} catch (error) {
+    console.error("Error creating logs directory:", error);
+}
+
+// Create logger instance
 const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.printf(({ timestamp, level, message }) => {
-      return `[${timestamp}] [${level.toUpperCase()}] ${message}`;
-    })
-  ),
-  transports: [
-    new winston.transports.File({ filename: logFilePath }),
-    new winston.transports.Console(),
-  ],
+    level: 'info',
+    format: winston.format.combine(
+        winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+        winston.format.printf(({ timestamp, level, message }) => {
+            return `${timestamp} [${level.toUpperCase()}]: ${message}`;
+        })
+    ),
+    transports: [
+        new winston.transports.File({ filename: path.join(logDirectory, 'server.log'), level: 'info' }),
+        new winston.transports.File({ filename: path.join(logDirectory, 'error.log'), level: 'error' }),
+        new winston.transports.Console()
+    ]
 });
 
 module.exports = logger;

@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./backend:/app  # Mount backend code for live updates
+      - ./logs:/app/logs  # Mount logs to store them on the host
+      - ./backend/.env:/app/.env  # Mount .env file for configuration
+    environment:
+      - PORT=3001
+      - DATABASE_URL=postgresql://postgres:kshitij162005@db.sxnzgqorcoeflskybltu.supabase.co:5432/postgres
